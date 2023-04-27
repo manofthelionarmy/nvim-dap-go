@@ -70,6 +70,13 @@ local function setup_delve_adapter(dap, config)
       initialize_timeout_sec = config.delve.initialize_timeout_sec,
     },
   }
+  dap.adapters.go_headless = {
+    type = "server",
+    port = config.headless.port,
+    options = {
+      initialize_timeout_sec = config.headless.initialize_timeout_sec,
+    },
+  }
 end
 
 local function setup_go_configuration(dap, configs)
@@ -114,6 +121,16 @@ local function setup_go_configuration(dap, configs)
       mode = "test",
       program = "./${relativeFileDirname}",
     },
+    {
+      type = "go_headless",
+      name = "Attache remote",
+      request = "attach",
+      mode = "remote",
+      connect = {
+        host = "127.0.0.1",
+        port = "8181"
+      }
+    }
   }
 
   if configs == nil or configs.dap_configurations == nil then
