@@ -10,6 +10,10 @@ local default_config = {
     initialize_timeout_sec = 20,
     port = "${port}",
   },
+  headless = {
+    initialize_timeout_sec = 20,
+    port = "8181",
+  }
 }
 
 local tests_query = [[
@@ -73,9 +77,9 @@ local function setup_delve_adapter(dap, config)
   dap.adapters.go_headless = {
     type = "server",
     port = config.headless.port,
-    options = {
-      initialize_timeout_sec = config.headless.initialize_timeout_sec,
-    },
+    -- options = {
+    --   initialize_timeout_sec = config.headless.initialize_timeout_sec,
+    -- },
   }
 end
 
