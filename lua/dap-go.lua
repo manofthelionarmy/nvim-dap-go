@@ -10,6 +10,7 @@ local default_config = {
     initialize_timeout_sec = 20,
     port = "${port}",
   },
+  -- TODO: what configurations should I have, should I remove port?
   headless = {
     initialize_timeout_sec = 20,
     port = "8181",
@@ -77,6 +78,7 @@ local function setup_delve_adapter(dap, config)
   dap.adapters.go_headless = {
     type = "server",
     port = config.headless.port,
+    -- TODO: make this configurable
     -- options = {
     --   initialize_timeout_sec = config.headless.initialize_timeout_sec,
     -- },
@@ -125,16 +127,17 @@ local function setup_go_configuration(dap, configs)
       mode = "test",
       program = "./${relativeFileDirname}",
     },
-    {
-      type = "go_headless",
-      name = "Attache remote",
-      request = "attach",
-      mode = "remote",
-      connect = {
-        host = "127.0.0.1",
-        port = "8181"
-      }
-    }
+    -- TODO: remove this?
+    -- {
+    --   type = "go_headless",
+    --   name = "Attach remote",
+    --   request = "attach",
+    --   mode = "remote",
+    --   connect = {
+    --     host = "127.0.0.1", -- TODO: make an option to prompt for tcp addres?
+    --     port = "8181"
+    --   }
+    -- }
   }
 
   if configs == nil or configs.dap_configurations == nil then
