@@ -75,8 +75,7 @@ local function setup_delve_adapter(dap, config)
     options = {
       initialize_timeout_sec = config.delve.initialize_timeout_sec,
     },
-  }
-  dap.adapters.go_headless = {
+  } dap.adapters.go_headless = {
     type = "server",
     port = config.headless.port,
     -- TODO: make this configurable
@@ -116,8 +115,7 @@ local function setup_go_configuration(dap, configs)
       processId = require("dap.utils").pick_process,
     },
     {
-      -- NOTE: can't do local because we get the ptrace error
-      -- Document to get this to work in docker
+      -- NOTE: Document to fall back to dlv debug if ptrace error is thrown
       type = "go_headless",
       name = "Dap Attach Remote",
       mode = "local",
