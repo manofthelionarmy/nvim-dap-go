@@ -93,11 +93,6 @@ local function setup_go_configuration(dap, configs)
       name = "Debug",
       request = "launch",
       program = "${file}",
-      -- TODO: make this configurable
-      connect = {
-        host = "127.0.0.1",
-        port = "8181"
-      }
     },
     {
       type = "go",
@@ -105,12 +100,7 @@ local function setup_go_configuration(dap, configs)
       request = "launch",
       program = "${file}",
       args = get_arguments,
-      connect = {
-        host = "127.0.0.1",
-        port = "8181"
-      }
     },
-    -- FIXME: can't get this to work
     {
       type = "go",
       name = "Debug Package",
