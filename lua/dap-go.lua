@@ -69,6 +69,7 @@ local function setup_delve_adapter(dap, config)
     port = config.delve.port,
     executable = {
       command = "dlv",
+      -- TODO: make the command more configurable per configuration
       args = { "dap", "-l", "127.0.0.1:" .. config.delve.port },
     },
     options = {
@@ -92,6 +93,11 @@ local function setup_go_configuration(dap, configs)
       name = "Debug",
       request = "launch",
       program = "${file}",
+      -- TODO: make this configurable
+      connect = {
+        host = "127.0.0.1",
+        port = "8181"
+      }
     },
     {
       type = "go",
@@ -99,7 +105,12 @@ local function setup_go_configuration(dap, configs)
       request = "launch",
       program = "${file}",
       args = get_arguments,
+      connect = {
+        host = "127.0.0.1",
+        port = "8181"
+      }
     },
+    -- FIXME: can't get this to work
     {
       type = "go",
       name = "Debug Package",
@@ -107,8 +118,18 @@ local function setup_go_configuration(dap, configs)
       program = "${fileDirname}",
     },
     {
-      type = "go",
-      name = "Attach",
+      -- document must start a separate process with dlv debug
+      type = "go_headless",
+      name = "Debug Attach Remote", -- only works for dlv debug, dlv dap, we have issues
+      mode = "remote",
+      request = "attach",
+      processId = require("dap.utils").pick_process,
+    },
+    {
+      -- NOTE: can't do local because we get the ptrace error
+      -- Document to get this to work in docker
+      type = "go_headless",
+      name = "Dap Attach Remote",
       mode = "local",
       request = "attach",
       processId = require("dap.utils").pick_process,
@@ -127,23 +148,13 @@ local function setup_go_configuration(dap, configs)
       mode = "test",
       program = "./${relativeFileDirname}",
     },
-    -- TODO: remove this?
-    -- {
-    --   type = "go_headless",
-    --   name = "Attach remote",
-    --   request = "attach",
-    --   mode = "remote",
-    --   connect = {
-    --     host = "127.0.0.1", -- TODO: make an option to prompt for tcp addres?
-    --     port = "8181"
-    --   }
-    -- }
   }
 
   if configs == nil or configs.dap_configurations == nil then
     return
   end
 
+  -- TODO: check the config to override the command, else default to default command
   for _, config in ipairs(configs.dap_configurations) do
     if config.type == "go" or config.type == "go_headless" then
       table.insert(dap.configurations.go, config)
